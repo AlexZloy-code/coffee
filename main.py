@@ -1,16 +1,17 @@
 import sys
 import sqlite3
 from random import randint
-from PyQt6 import uic
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QMessageBox
+from main_style import Ui_MainWindow as main_style
+from addEditCoffeeForm import Ui_MainWindow as win_style
 
 
-class AddWidget(QMainWindow):
+class AddWidget(QMainWindow, win_style):
     def __init__(self, parent=None, coffee_id=None):
         super().__init__(parent)
-        uic.loadUi('addEditCoffeeForm.ui', self)
+        self.setupUi(self)
 
-        self.conn = sqlite3.connect('coffee.sqlite')
+        self.conn = sqlite3.connect('data/coffee.sqlite')
         cur = self.conn.cursor()
         self.params = dict(cur.execute("""SELECT title, id FROM Types""").fetchall())
         self.current_param = self.params[list(self.params.keys())[0]]
@@ -74,12 +75,13 @@ class AddWidget(QMainWindow):
         self.statusBar().showMessage('Неверно заполнена форма')
 
 
-class MyWidget(QMainWindow):
+class MyWidget(QMainWindow, main_style):
     def __init__(self):
         super().__init__()
-        uic.loadUi('main.ui', self)  # Загружаем дизайн
-        self.conn = sqlite3.connect('coffee.sqlite')
+        self.setupUi(self)
+        self.conn = sqlite3.connect('data/coffee.sqlite')
         self.update_coffees()
+        
 
         self.pushButton.clicked.connect(self.add_coffee)
         self.pushButton_2.clicked.connect(self.edit_coffee)
